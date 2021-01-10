@@ -5,7 +5,7 @@ namespace SpriteKind {
     export const Blue_ninjaStar = SpriteKind.create()
 }
 controller.player2.onButtonEvent(ControllerButton.A, ControllerButtonEvent.Pressed, function () {
-    if (player1_star_count > 0) {
+    if (player2_star_count > 0) {
         if (player2.vx != 0 || player2.vy != 0) {
             music.pewPew.play()
             projectile = sprites.createProjectileFromSprite(img`
@@ -139,6 +139,7 @@ sprites.onOverlap(SpriteKind.Blue_ninjaStar, SpriteKind.Red_Player, function (sp
 })
 let projectile: Sprite = null
 let free_star: Sprite = null
+let player2_star_count = 0
 let player1_star_count = 0
 let shootmultiple = 0
 let player2: Sprite = null
@@ -309,7 +310,7 @@ controller.player2.moveSprite(player2, 100, 100)
 info.player2.setLife(3)
 shootmultiple = 2
 player1_star_count = 0
-let player2_star_count = 0
+player2_star_count = 0
 for (let index = 0; index < 3; index++) {
     free_star = sprites.create(img`
         . . . . . . . . . . . . . . . . 
