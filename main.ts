@@ -5,98 +5,141 @@ namespace SpriteKind {
     export const Blue_ninjaStar = SpriteKind.create()
 }
 controller.player2.onButtonEvent(ControllerButton.A, ControllerButtonEvent.Pressed, function () {
-    if (player2.vx != 0 || player2.vy != 0) {
-        projectile = sprites.createProjectileFromSprite(img`
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . f . . . . . . 
-            . . . . . . . . f f . . . . . . 
-            . . . . . . . f f f . . . . . . 
-            . . . . f f f f f f f . . . . . 
-            . . . . . f f f 1 f f f . . . . 
-            . . . . . . f f f f f f f . . . 
-            . . . . . . . f f f . . . . . . 
-            . . . . . . . f f . . . . . . . 
-            . . . . . . . f . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            `, player2, player2.vx * shootmultiple, player2.vy * shootmultiple)
-        projectile.setKind(SpriteKind.Blue_ninjaStar)
+    if (player1_star_count > 0) {
+        if (player2.vx != 0 || player2.vy != 0) {
+            music.pewPew.play()
+            projectile = sprites.createProjectileFromSprite(img`
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . f . . . . . . 
+                . . . . . . . . f f . . . . . . 
+                . . . . . . . f f f . . . . . . 
+                . . . . f f f f f f f . . . . . 
+                . . . . . f f f 1 f f f . . . . 
+                . . . . . . f f f f f f f . . . 
+                . . . . . . . f f f . . . . . . 
+                . . . . . . . f f . . . . . . . 
+                . . . . . . . f . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                `, player2, player2.vx * shootmultiple, player2.vy * shootmultiple)
+            projectile.setKind(SpriteKind.Blue_ninjaStar)
+        } else {
+            music.pewPew.play()
+            projectile = sprites.createProjectileFromSprite(img`
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . f . . . . . . 
+                . . . . . . . . f f . . . . . . 
+                . . . . . . . f f f . . . . . . 
+                . . . . f f f f f f f . . . . . 
+                . . . . . f f f 1 f f f . . . . 
+                . . . . . . f f f f f f f . . . 
+                . . . . . . . f f f . . . . . . 
+                . . . . . . . f f . . . . . . . 
+                . . . . . . . f . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                `, player2, 0, 200)
+            projectile.setKind(SpriteKind.Blue_ninjaStar)
+            player2_star_count += -1
+        }
     } else {
-        projectile = sprites.createProjectileFromSprite(img`
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . f . . . . . . 
-            . . . . . . . . f f . . . . . . 
-            . . . . . . . f f f . . . . . . 
-            . . . . f f f f f f f . . . . . 
-            . . . . . f f f 1 f f f . . . . 
-            . . . . . . f f f f f f f . . . 
-            . . . . . . . f f f . . . . . . 
-            . . . . . . . f f . . . . . . . 
-            . . . . . . . f . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            `, player2, 0, 200)
-        projectile.setKind(SpriteKind.Blue_ninjaStar)
+        music.playMelody("B F E - - - - - ", 400)
     }
+})
+sprites.onOverlap(SpriteKind.Red_ninjaStar, SpriteKind.Blue_Player, function (sprite, otherSprite) {
+    music.baDing.play()
+    if (info.player2.life() > 1) {
+        info.player2.changeLifeBy(-1)
+        sprite.destroy()
+    } else {
+        game.splash("Player 1 WINS!")
+        game.over(true)
+    }
+})
+sprites.onOverlap(SpriteKind.Red_Player, SpriteKind.Food, function (sprite, otherSprite) {
+    player1_star_count += 1
+    otherSprite.destroy()
 })
 sprites.onOverlap(SpriteKind.Red_ninjaStar, SpriteKind.Blue_ninjaStar, function (sprite, otherSprite) {
-    info.player2.changeLifeBy(-1)
+    sprite.destroy()
+    otherSprite.destroy()
+    music.powerDown.play()
 })
 controller.player1.onButtonEvent(ControllerButton.A, ControllerButtonEvent.Pressed, function () {
-    if (player1.vx != 0 || player1.vy != 0) {
-        projectile = sprites.createProjectileFromSprite(img`
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . f . . . . . . 
-            . . . . . . . . f f . . . . . . 
-            . . . . . . . f f f . . . . . . 
-            . . . . f f f f f f f . . . . . 
-            . . . . . f f f 1 f f f . . . . 
-            . . . . . . f f f f f f f . . . 
-            . . . . . . . f f f . . . . . . 
-            . . . . . . . f f . . . . . . . 
-            . . . . . . . f . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            `, player1, player1.vx * shootmultiple, player1.vy * shootmultiple)
-        projectile.setKind(SpriteKind.Red_ninjaStar)
+    if (player1_star_count > 0) {
+        if (player1.vx != 0 || player1.vy != 0) {
+            music.pewPew.play()
+            projectile = sprites.createProjectileFromSprite(img`
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . f . . . . . . 
+                . . . . . . . . f f . . . . . . 
+                . . . . . . . f f f . . . . . . 
+                . . . . f f f f f f f . . . . . 
+                . . . . . f f f 1 f f f . . . . 
+                . . . . . . f f f f f f f . . . 
+                . . . . . . . f f f . . . . . . 
+                . . . . . . . f f . . . . . . . 
+                . . . . . . . f . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                `, player1, player1.vx * shootmultiple, player1.vy * shootmultiple)
+            projectile.setKind(SpriteKind.Red_ninjaStar)
+        } else {
+            music.pewPew.play()
+            projectile = sprites.createProjectileFromSprite(img`
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . f . . . . . . 
+                . . . . . . . . f f . . . . . . 
+                . . . . . . . f f f . . . . . . 
+                . . . . f f f f f f f . . . . . 
+                . . . . . f f f 1 f f f . . . . 
+                . . . . . . f f f f f f f . . . 
+                . . . . . . . f f f . . . . . . 
+                . . . . . . . f f . . . . . . . 
+                . . . . . . . f . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                `, player1, 0, 200)
+            projectile.setKind(SpriteKind.Red_ninjaStar)
+        }
+        player1_star_count += -1
     } else {
-        projectile = sprites.createProjectileFromSprite(img`
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . f . . . . . . 
-            . . . . . . . . f f . . . . . . 
-            . . . . . . . f f f . . . . . . 
-            . . . . f f f f f f f . . . . . 
-            . . . . . f f f 1 f f f . . . . 
-            . . . . . . f f f f f f f . . . 
-            . . . . . . . f f f . . . . . . 
-            . . . . . . . f f . . . . . . . 
-            . . . . . . . f . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            `, player1, 0, 200)
-        projectile.setKind(SpriteKind.Red_ninjaStar)
+        music.playMelody("- F E - - - - - ", 400)
     }
 })
+sprites.onOverlap(SpriteKind.Blue_Player, SpriteKind.Food, function (sprite, otherSprite) {
+    player2_star_count += 1
+    otherSprite.destroy()
+})
 sprites.onOverlap(SpriteKind.Blue_ninjaStar, SpriteKind.Red_Player, function (sprite, otherSprite) {
-    info.player2.changeLifeBy(-1)
+    music.baDing.play()
+    if (info.player1.life() > 1) {
+        info.player1.changeLifeBy(-1)
+        sprite.destroy()
+    } else {
+        game.splash("Player 2 WINS!")
+        game.over(true)
+    }
 })
 let projectile: Sprite = null
+let free_star: Sprite = null
+let player1_star_count = 0
 let shootmultiple = 0
 let player2: Sprite = null
 let player1: Sprite = null
@@ -265,3 +308,49 @@ player2.setPosition(140, 60)
 controller.player2.moveSprite(player2, 100, 100)
 info.player2.setLife(3)
 shootmultiple = 2
+player1_star_count = 0
+let player2_star_count = 0
+for (let index = 0; index < 3; index++) {
+    free_star = sprites.create(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . f . . . . . . 
+        . . . . . . . . f f . . . . . . 
+        . . . . . . . f f f . . . . . . 
+        . . . . f f f f f f f . . . . . 
+        . . . . . f f f 1 f f f . . . . 
+        . . . . . . f f f f f f f . . . 
+        . . . . . . . f f f . . . . . . 
+        . . . . . . . f f . . . . . . . 
+        . . . . . . . f . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `, SpriteKind.Food)
+    free_star.setPosition(80, randint(0, 120))
+}
+player1.setFlag(SpriteFlag.StayInScreen, true)
+player2.setFlag(SpriteFlag.StayInScreen, true)
+game.onUpdateInterval(5000, function () {
+    free_star = sprites.create(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . f . . . . . . 
+        . . . . . . . . f f . . . . . . 
+        . . . . . . . f f f . . . . . . 
+        . . . . f f f f f f f . . . . . 
+        . . . . . f f f 1 f f f . . . . 
+        . . . . . . f f f f f f f . . . 
+        . . . . . . . f f f . . . . . . 
+        . . . . . . . f f . . . . . . . 
+        . . . . . . . f . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `, SpriteKind.Food)
+    free_star.setPosition(randint(0, 160), randint(0, 120))
+})
